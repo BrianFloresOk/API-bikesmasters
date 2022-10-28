@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const path = require('path');
 require('dotenv').config();
-const PORT = process.env.PORT  ||  4000;
+const PORT = process.env.PORT || 4000;
 const methodOverride =  require('method-override'); // Pasar poder usar los métodos PUT y DELETE
 /* const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
