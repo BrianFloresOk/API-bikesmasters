@@ -3,11 +3,11 @@ const app = express();
 const path = require('path');
 require('dotenv').config();
 const PORT = process.env.PORT  ||  4000;
-//const methodOverride =  require('method-override'); // Pasar poder usar los métodos PUT y DELETE
+const methodOverride =  require('method-override'); // Pasar poder usar los métodos PUT y DELETE
 /* const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
-const cors = require('cors');
-const passport = require('passport') */
+const cors = require('cors'); */
+
 const apiRouter = require("../src/routes/apiRoutes")
 
 /* Views config */
@@ -17,24 +17,11 @@ app.set('views', path.join(__dirname, "views"));
 /* Middlewares */
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({extended: false}));
+app.use(methodOverride('_method'));
 
-/* app.use(methodOverride('_method')); */
 app.use(express.json());
 /* app.use(cors()) */
 
-// Initializes passport and passport sessions
-/* app.use(passport.initialize());
-app.use(passport.session()); */
-
-
-// Auth Routes
-/* app.get('usuario/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-app.get('usuario/google/callback', passport.authenticate('google', { failureRedirect: '/usuario/login' }),
-  function(req, res) {
-    res.redirect('/');
-  }
-); */
 ///Ruta de APIS///
 app.use('/api' , apiRouter);
 
