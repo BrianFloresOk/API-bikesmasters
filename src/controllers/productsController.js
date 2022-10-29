@@ -1,8 +1,7 @@
-const { Producto, Usuario, Categoria } = require('../database/models')
+const { Producto } = require('../database/models')
 const fs = require('fs');
 const path = require('path');
 const { Op } = require("sequelize");
-const { all } = require('../routes/apiRoutes');
 require('dotenv').config();
 const PORT = process.env.PORT || 4000;
 

@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const path = require('path');
+const logger = require("morgan")
 require('dotenv').config();
 const PORT = process.env.PORT || 4000;
 const methodOverride =  require('method-override'); // Pasar poder usar los métodos PUT y DELETE
@@ -8,22 +8,25 @@ const methodOverride =  require('method-override'); // Pasar poder usar los mét
 const bcrypt = require('bcryptjs');
 const cors = require('cors'); */
 
-const apiRouter = require("../src/routes/apiRoutes")
+/****** ROUTES ******/
 
-/* Views config */
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, "views"));
+const indexRoute = require("./routes/indexRouter")
+const productsRoutes = require("./routes/productsRouter")
+const usersRoutes = require("./routes/usersRouter")
+const categoriesRoutes = require("./routes/categoriesRouter")
 
 /* Middlewares */
-app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.urlencoded({extended: false}));
 app.use(methodOverride('_method'));
-
 app.use(express.json());
+app.use(logger('dev'))
 /* app.use(cors()) */
 
 ///Ruta de APIS///
-app.use('/api' , apiRouter);
+app.use('/api', indexRoute)
+app.use("/api/productos", productsRoutes);
+app.use("/api/usuarios", usersRoutes)
+app.use("/api/categorias", categoriesRoutes)
 
 app.use((req, res, next) => {
     res.status(404).json('not-found');
