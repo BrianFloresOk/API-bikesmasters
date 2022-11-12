@@ -1,4 +1,4 @@
-const { Usuario } = require("../database/models");
+const { User } = require("../database/models");
 require('dotenv').config();
 const PORT = process.env.PORT || 4000;
 
@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 4000;
 module.exports = {
     list: async (req, res) => {
         try {
-            let users = await Usuario.findAll({
+            let users = await User.findAll({
                 include: "userRol"
             })
             if (!users) {
@@ -34,9 +34,43 @@ module.exports = {
         }
     },
 
+    create: async (req, res) => {
+        const { name, email, password } = req.body;
+        try {
+            let userCreate = await User.create({
+                name,
+                email,
+                password,
+                rol_id: 1
+            })
+
+            if(!userCreate) {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        msg: "Ocurrio un error"
+                    }
+                })
+            }
+
+            let response = {
+                meta: {
+                    status: 200,
+                    msg: "Usuario creado correctamente"
+                },
+                data: userCreate
+            }
+
+            res.status(200).json(response)
+
+        } catch (error) {
+            res.json(error)
+        }
+    },
+
     getOne: async (req, res) => {
         let userId = +req.params.id;
-        let user = await Usuario.findByPk(userId, {
+        let user = await User.findByPk(userId, {
             include: ["userRol", "direccion"]
         });
 
