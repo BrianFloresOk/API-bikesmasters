@@ -7,6 +7,7 @@ const PORT = process.env.PORT || 4000;
 /* const methodOverride =  require('method-override'); */ // Pasar poder usar los métodos PUT y DELETE
 const cors = require('cors')
 const path = require("path")
+const cookieParser = require("cookie-parser")
 
 /* SWAGGER para documentar API */
 const swaggerUi = require("swagger-ui-express");
@@ -31,9 +32,9 @@ const swaggerSpec = {
 
 /****** ROUTES ******/
 
-const indexRoute = require("./routes/indexRouter")
+const indexRoute = require("./routes/indexRouter");
+const adminIndexRoute = require("./routes/adminRoutes/adminIndex")
 const productsRoutes = require("./routes/productsRouter")
-const usersRoutes = require("./routes/usersRouter")
 const categoriesRoutes = require("./routes/categoriesRouter")
 
 /* Middlewares */
@@ -42,21 +43,23 @@ app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(logger('dev'))
 app.use(cors())
+app.use(cookieParser())
 
 // Middlware de swagger
 app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerSpec)))
 
 ///Ruta de APIS///
-app.use('/api', indexRoute)
+app.use('/api', indexRoute);
+
+/* ADMIN ROUTES */
+app.use("/api/admin", adminIndexRoute)
 app.use("/api/productos", productsRoutes);
-app.use("/api/usuarios", usersRoutes)
 app.use("/api/categorias", categoriesRoutes)
 
 app.use((req, res, next) => {
     next(createError(404))
   })
 
-console.log(PORT);
 
 app.listen(PORT, () => console.log( `Servidor levantado en el puerto ${PORT}
 http://localhost:${PORT}`))

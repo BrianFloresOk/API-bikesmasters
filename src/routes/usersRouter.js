@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { list, create, getOne, editUser, cancelUser, deleteUser, findUsers, login } = require("../controllers/usersController")
+const { list, create, getOne, editUser, cancelUser, deleteUser, findUsers, login, logout } = require("../controllers/usersController")
 
 
 //DOCUMENTACION CON SWAGGER
@@ -26,5 +26,6 @@ router.post('/cancelar-cuenta/:id', cancelUser);
 router.delete('/:id', deleteUser);
 router.get('/search', findUsers);
 router.post('/login', login);
+router.get('/logout', logout);
 
 module.exports = router

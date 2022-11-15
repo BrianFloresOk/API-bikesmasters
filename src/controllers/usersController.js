@@ -277,6 +277,18 @@ module.exports = {
                 };
 
                 let userLoged = await jwtCreate(userData);
+
+                const TIME_IN_MILISECONDS = 60000;
+
+                res.cookie('bikes', userLoged, {
+                    expires: new Date(Date.now() + TIME_IN_MILISECONDS),
+                    httpOnly: true,
+                    secure: true
+                });
+
+                console.log(userLoged);
+                console.log(req.cookies.bikes);
+
                 res.status(200).json({
                     meta: {
                         status: 200,
@@ -296,6 +308,33 @@ module.exports = {
         } catch (error) {
             res.json(error)
         }
+    },
+
+    logout: async (req, res) => {
+        try {
+            if(!req.cookies.bikes) {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        message: "Ocurrió un error"
+                    }
+                })
+            } else {
+                res.cookie('bikes', "", { maxAge: -1 });
+                let response = {
+                    meta: {
+                        status: 200,
+                        message: "Sesión finalizada"
+                    }
+                };
+        
+                res.status(200).json(response)
+            }
+        } catch (error) {
+            res.json(error)
+        }
+
+        
     }
 
 }
