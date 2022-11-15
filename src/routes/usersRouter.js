@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const usersController = require("../controllers/usersController")
+const { list, create, getOne, editUser, cancelUser, deleteUser, findUsers, login } = require("../controllers/usersController")
 
 
 //DOCUMENTACION CON SWAGGER
@@ -18,9 +18,13 @@ const usersController = require("../controllers/usersController")
  * 
  * 
  */
-router.get('/', usersController.list)
-router.post('/crear', usersController.create)
-router.get('/:id', usersController.getOne)
-
+router.get('/', list);
+router.post('/crear', create);
+router.get('/:id', getOne);
+router.put('/:id', editUser);
+router.post('/cancelar-cuenta/:id', cancelUser);
+router.delete('/:id', deleteUser);
+router.get('/search', findUsers);
+router.post('/login', login);
 
 module.exports = router

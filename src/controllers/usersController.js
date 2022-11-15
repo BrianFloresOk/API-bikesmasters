@@ -1,12 +1,17 @@
+const { Op } = require("sequelize")
 const { User } = require("../database/models");
 require('dotenv').config();
 const PORT = process.env.PORT || 4000;
+const { jwtCreate } = require("../middlewares/userToken")
 
 
 module.exports = {
     list: async (req, res) => {
         try {
             let users = await User.findAll({
+                /*                 where: {
+                                    active: true
+                                }, */
                 include: "userRol"
             })
             if (!users) {
@@ -41,10 +46,11 @@ module.exports = {
                 name,
                 email,
                 password,
-                rol_id: 1
+                rol_id: 1,
+                active: true
             })
 
-            if(!userCreate) {
+            if (!userCreate) {
                 res.status(400).json({
                     meta: {
                         status: 400,
@@ -63,6 +69,45 @@ module.exports = {
 
             res.status(200).json(response)
 
+        } catch (error) {
+            res.json(error)
+        }
+    },
+
+    editUser: async (req, res) => {
+        const { name, telefono } = req.body;
+        const { id } = req.params;
+        try {
+            let exist = await User.findByPk(id);
+            if (exist) {
+                let user = await User.update({
+                    name,
+                    telefono,
+                    avatar: req.file ? req.file.filename : "default.jpg"
+                }, {
+                    where: { id }
+                })
+
+                if (user) {
+                    let userUpdated = await User.findByPk(id);
+                    let response = {
+                        meta: {
+                            status: true,
+                            message: "Actualización correcta",
+                            url: `http://localhost:${PORT}/api/usuarios/${id}`
+                        },
+                        data: userUpdated
+                    };
+                    res.status(200).json(response)
+                }
+            } else {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        message: "Ocurrio un error"
+                    }
+                })
+            }
         } catch (error) {
             res.json(error)
         }
@@ -93,9 +138,164 @@ module.exports = {
                 }
                 res.status(200).json(response)
             }
+
+        } catch (error) {
+            res.json(error)
+        }
+    },
+
+    cancelUser: async (req, res) => {
+        const { id } = req.params;
+        try {
+            let user = await User.update({
+                active: false
+            }, {
+                where: { id }
+            })
+
+            if (user) {
+                let userCanceled = await User.findByPk(id);
+                let response = {
+                    meta: {
+                        status: 200,
+                        message: "Cancelación exitosa"
+                    },
+                    data: {
+                        message: `El usuario ${userCanceled.name} desactivó su cuenta`,
+                        userCanceled,
+                    }
+                };
+
+                res.status(200).json(response)
+
+            } else {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        message: "Ocurrió un error"
+                    }
+                })
+            }
+
+        } catch (error) {
+            res.json(error)
+        }
+    },
+
+    deleteUser: async (req, res) => {
+        const { id } = req.params;
+        try {
+            let user = await User.findByPk(id)
+            if (user) {
+                await User.destroy({
+                    where: {
+                        id: user.id
+                    }
+                })
+                let response = {
+                    meta: {
+                        status: 200,
+                        message: "Carga exitosa"
+                    },
+                    data: {
+                        message: `El usuario: "${user.name}" ha sido eliminado`
+                    }
+                };
+
+                res.status(200).json(response)
+
+            } else {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        message: "Ocurrió un error"
+                    }
+                })
+            }
+
+        } catch (error) {
+            res.json(error)
+        }
+    },
+
+    findUsers: async (req, res) => {
+        console.log("ENTRE AL CONTROLADOR ****************************************");
+        const busqueda = req.query.keywords;
+        console.log(busqueda);
+        try {
+            const users = await User.findAll({
+                where: {
+                    name: {[Op.substring]: busqueda}
+                }
+            });
+            if(!users) {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        message: "No se encotraron resultados",
+                        total: users.length
+                    },
+                    data: {
+                        users: false
+                    }
+                })
+            }
+
+            let response = {
+                meta: {
+                    status: 200,
+                    message: "Carga exitosa",
+                    total: users.length
+                },
+                data: users
+            }
+
+            res.status(200).json(response)
+
+        } catch (error) {
+            let err = "Hola soy un error"
+            res.json(error)
+        }
+    },
+
+    login: async (req, res) => {
+        const { email, password } = req.body;
+        try {
+            let user = await User.findOne({
+                where: {
+                    email: email
+                }
+            })
+
+            if(user && user.password === password) {
+
+                let userData = {
+                    id: user.id,
+                    name: user.name,
+                    email: user.email,
+                    rol_id: user.rol_id
+                };
+
+                let userLoged = await jwtCreate(userData);
+                res.status(200).json({
+                    meta: {
+                        status: 200,
+                        message: "Login autorizado"
+                    },
+                    data: userLoged
+                });
+            } else {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        message: "Ocurrió un error"
+                    }
+                })
+            }
             
         } catch (error) {
             res.json(error)
         }
     }
+
 }

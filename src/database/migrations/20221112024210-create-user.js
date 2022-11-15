@@ -30,6 +30,9 @@ module.exports = {
       telefono: {
         type: Sequelize.STRING
       },
+      active: {
+        type: Sequelize.BOOLEAN
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
