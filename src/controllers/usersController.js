@@ -46,7 +46,7 @@ module.exports = {
                 name,
                 email,
                 password,
-                rol_id: 1,
+                rol_id: 2,
                 active: true
             })
 
