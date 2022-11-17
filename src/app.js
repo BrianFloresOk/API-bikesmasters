@@ -32,7 +32,7 @@ const swaggerSpec = {
 
 /****** ROUTES ******/
 
-const indexRoute = require("./routes/indexRouter");
+const indexRoutes = require("./routes/indexRouter");
 const adminIndexRoute = require("./routes/adminRoutes/adminIndex")
 const productsRoutes = require("./routes/productsRouter")
 const categoriesRoutes = require("./routes/categoriesRouter")
@@ -49,7 +49,7 @@ app.use(cookieParser())
 app.use("/api-doc", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc(swaggerSpec)))
 
 ///Ruta de APIS///
-app.use('/api', indexRoute);
+app.use('/api', indexRoutes);
 
 /* ADMIN ROUTES */
 app.use("/api/admin", adminIndexRoute)
@@ -58,7 +58,7 @@ app.use("/api/categorias", categoriesRoutes)
 
 app.use((req, res, next) => {
     next(createError(404))
-  })
+  });
 
 
 app.listen(PORT, () => console.log( `Servidor levantado en el puerto ${PORT}

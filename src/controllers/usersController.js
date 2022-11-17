@@ -6,38 +6,6 @@ const { jwtCreate } = require("../middlewares/userToken")
 
 
 module.exports = {
-    list: async (req, res) => {
-        try {
-            let users = await User.findAll({
-                /*                 where: {
-                                    active: true
-                                }, */
-                include: "userRol"
-            })
-            if (!users) {
-                res.status(400).json({
-                    meta: {
-                        status: 400,
-                        msg: "No se encontraron resultados"
-                    }
-                })
-            } else {
-                let response = {
-                    meta: {
-                        status: 200,
-                        msg: "Carga completa",
-                        total: users.length,
-                        url: `http://localhost:${PORT}/api/usuarios`
-                    },
-                    data: users
-                }
-                res.status(200).json(response)
-            }
-
-        } catch (error) {
-            res.json(error)
-        }
-    },
 
     create: async (req, res) => {
         const { name, email, password } = req.body;
@@ -225,10 +193,10 @@ module.exports = {
         try {
             const users = await User.findAll({
                 where: {
-                    name: {[Op.substring]: busqueda}
+                    name: { [Op.substring]: busqueda }
                 }
             });
-            if(!users) {
+            if (!users) {
                 res.status(400).json({
                     meta: {
                         status: 400,
@@ -267,7 +235,7 @@ module.exports = {
                 }
             })
 
-            if(user && user.password === password) {
+            if (user && user.password === password) {
 
                 let userData = {
                     id: user.id,
@@ -304,7 +272,7 @@ module.exports = {
                     }
                 })
             }
-            
+
         } catch (error) {
             res.json(error)
         }
@@ -312,7 +280,7 @@ module.exports = {
 
     logout: async (req, res) => {
         try {
-            if(!req.cookies.bikes) {
+            if (!req.cookies.bikes) {
                 res.status(400).json({
                     meta: {
                         status: 400,
@@ -327,14 +295,14 @@ module.exports = {
                         message: "Sesión finalizada"
                     }
                 };
-        
+
                 res.status(200).json(response)
             }
         } catch (error) {
             res.json(error)
         }
 
-        
+
     }
 
 }

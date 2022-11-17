@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { list, create, getOne, editUser, cancelUser, deleteUser, findUsers, login, logout } = require("../controllers/usersController")
+const { create, getOne, editUser, cancelUser, deleteUser, findUsers, login, logout } = require("../controllers/usersController")
 
 
 //DOCUMENTACION CON SWAGGER
@@ -18,7 +18,6 @@ const { list, create, getOne, editUser, cancelUser, deleteUser, findUsers, login
  * 
  * 
  */
-router.get('/', list);
 router.post('/crear', create);
 router.get('/:id', getOne);
 router.put('/:id', editUser);
