@@ -84,7 +84,8 @@ module.exports = {
     getOne: async (req, res) => {
         let userId = +req.params.id;
         let user = await User.findByPk(userId, {
-            include: ["userRol", "direccion"]
+            attributes:['id', 'name', 'email', 'avatar', 'telefono', 'direccion_id'],
+            include: ["direccion"]
         });
 
         try {
