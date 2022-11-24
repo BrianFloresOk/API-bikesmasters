@@ -35,7 +35,6 @@ const swaggerSpec = {
 const indexRoutes = require("./routes/indexRouter");
 const adminIndexRoute = require("./routes/adminRoutes/adminIndex")
 const productsRoutes = require("./routes/productsRouter")
-const categoriesRoutes = require("./routes/categoriesRouter")
 
 /* Middlewares */
 app.use(express.urlencoded({extended: false}));
@@ -54,7 +53,6 @@ app.use('/api', indexRoutes);
 /* ADMIN ROUTES */
 app.use("/api/admin", adminIndexRoute)
 app.use("/api/productos", productsRoutes);
-app.use("/api/categorias", categoriesRoutes)
 
 app.use((req, res, next) => {
     next(createError(404))

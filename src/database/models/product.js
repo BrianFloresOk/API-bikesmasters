@@ -30,7 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     stock: DataTypes.INTEGER,
     image: DataTypes.STRING,
     price: DataTypes.DECIMAL,
-    user_id: DataTypes.INTEGER
+    user_id: DataTypes.INTEGER,
+    active: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Product',

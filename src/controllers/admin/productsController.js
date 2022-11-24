@@ -1,5 +1,4 @@
 const { Product } = require("../../database/models");
-const { endpointResponse } = require("../../helpers/success")
 
 module.exports = {
     list: async (req, res) => {
@@ -9,7 +8,7 @@ module.exports = {
             });
 
             if(allProducts) {
-/*                 let response = {
+                 let response = {
                     meta: {
                         status: 200,
                         message: "Carga completa",
@@ -18,13 +17,7 @@ module.exports = {
                     data: allProducts
                 };
 
-                res.status(200).json(response) */
-                endpointResponse({
-                    res,
-                    message: "Carga completa con funcion response",
-                    body: allProducts,
-                })
-
+                res.status(200).json(response);
             } else {
                 res.status(400).json({
                     meta: {
@@ -42,4 +35,42 @@ module.exports = {
             res.json(err)
         }
     },
+
+    createProduct: async (req, res) => {
+        const { name, price, discount, marca, stock, description, category_id } = req.body;
+        try {
+            let product = await Product.create({
+                name,
+                price,
+                discount,
+                marca,
+                stock,
+                description,
+                category_id,
+                image: req.file? req.file.filename : "default.jpg"
+            })
+
+            if(product) {
+                let response = {
+                    meta: {
+                        status: 200,
+                        message: "Carga completa"
+                    },
+                    data: product
+                };
+                res.status(200).json(response)
+            } else {
+                res.status(400).json({
+                    meta: {
+                        status: 400,
+                        message: "Ocurrió un error"
+                    }
+                })
+            };
+
+        } catch (error) {
+            res.json(error.message)
+        };
+    },
+
 }
